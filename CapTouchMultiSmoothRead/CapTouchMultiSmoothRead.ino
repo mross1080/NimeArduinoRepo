@@ -4,6 +4,7 @@ int tpin3 = 19;
 int tpin4 = 18;
 int tpin5 = 17;
 int tpin6 = 16;
+int tpin7 = 15  ;
 const int numReadings = 10;
 
 int readings[numReadings];      // the readings from the analog input
@@ -95,16 +96,22 @@ void loop() {
       usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 4);
     //
     //
-    //  currentValue = touchRead(tpin5);
-    //  Serial.print("Pin 5 :       ");
-    //  Serial.println(currentValue);
-    //  usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 5);
+      currentValue = touchRead(tpin5);
+      Serial.print("Pin 5 :       ");
+      Serial.println(currentValue);
+      usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 5);
 
     //
-    //  currentValue = touchRead(tpin6);
-    //  Serial.print("Pin 6 :       ");
-    //  Serial.println(currentValue);
-    //  usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 6);
+      currentValue = touchRead(tpin6);
+      Serial.print("Pin 6 :       ");
+      Serial.println(currentValue);
+      usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 6);
+
+       currentValue = touchRead(tpin7);
+      Serial.print("Pin 7 :       ");
+      Serial.println(currentValue);
+      usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 7);
+      Serial.println("\n \n \n \n \n ");
   } else {
     currentValue = touchRead(tpin1);
     if (currentValue > 1000) {
