@@ -62,6 +62,7 @@ void loop() {
 //  printAnalogInputs(val, val2, val3, val4, val5, val6, val7);
 
 
+  //  Serial.println(touchRead(23));
   processInputChanges();
   processEvents(currentMillis);
 
