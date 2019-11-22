@@ -7,13 +7,18 @@ long randomvalue = 0; // random value
 long countervalue = 0; // counter value
 int serialvalue; // value for serial input
 int started = 0; // flag for whether we've received serial yet
-int ledPin  = 0;
+
 
 void setup()
 {
   Serial.begin(9600); // open the arduino serial port]
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
+  SPI.begin();
+
+  pinMode(csPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+
+  
+  
   Serial.println("Setting initial voltage");
   setVoltageSPIPin(200);
   Serial.println("Done setting initial voltage");
@@ -29,7 +34,7 @@ boolean route2Triggered = false;
 boolean route3Triggered = false;
 
 void setVoltageSPIPin(int voltage) {
-  voltage = map(voltage,0,255,0,4096);
+  voltage = map(voltage, 0, 255, 0, 4096);
   Serial.println(voltage);
   int channel = 0; //VOUTA
   int gain = 2; //range = 2* VREF
