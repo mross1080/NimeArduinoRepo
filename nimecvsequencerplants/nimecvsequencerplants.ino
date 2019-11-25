@@ -7,7 +7,7 @@ long randomvalue = 0; // random value
 long countervalue = 0; // counter value
 int serialvalue; // value for serial input
 int started = 0; // flag for whether we've received serial yet
-
+boolean debugVoltageOutput = true;
 
 void setup()
 {
@@ -17,11 +17,40 @@ void setup()
   pinMode(csPin, OUTPUT);
   pinMode(latchPin, OUTPUT);
 
-  
-  
+
+
   Serial.println("Setting initial voltage");
   setVoltageSPIPin(200);
   Serial.println("Done setting initial voltage");
+
+  if (debugVoltageOutput) {
+    Serial.println("Setting initial voltage low");
+    analogWrite(2, 20);
+    delay(10);
+    analogWrite(9, 20);
+    delay(10);
+    setVoltageSPIPin(20);
+    delay(1000);
+
+    Serial.println("Setting initial voltage highw");
+    analogWrite(2, 255);
+    delay(10);
+    analogWrite(9, 255);
+    delay(10);
+    setVoltageSPIPin(255);
+    delay(1000);
+
+    Serial.println("Setting initial voltage medium");
+    setVoltageSPIPin(120);
+    analogWrite(2, 120);
+    delay(10);
+    analogWrite(9, 120);
+    delay(10);
+    delay(1000);
+    Serial.println("moving on to normal loop");
+
+
+  }
 }
 int value;
 String analogVoltage = "";

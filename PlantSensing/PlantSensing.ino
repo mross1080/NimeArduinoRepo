@@ -4,6 +4,7 @@ int previousLow2 = 99999999;
 int previousLow3 = 99999999;
 int previousLow4 = 99999999;
 int HOLD_PIN_INDEX = 5;
+const int TOUCH_THRESHOLD = 3000;
 int touchPins[7] = { 23, 22, 19, 18, 17, 16, 15};
 boolean pressedStates[7] = {false, false, false, false, false, false, false};
 int previousLowVals[7] = {99999999, 99999999, 99999999, 99999999, 99999999, 99999999, 99999999};
@@ -46,6 +47,8 @@ void printAnalogInputs(int val, int val2, int  val3, int  val4, int  val5, int  
   Serial.print("touch 7 is: ");
   Serial.println(val7);
 
+  Serial.println("\n \n \n ");
+
 }
 
 
@@ -59,7 +62,7 @@ void loop() {
   val6 = touchRead(16);
   val7 = touchRead(15);
   unsigned long currentMillis = millis();
-//  printAnalogInputs(val, val2, val3, val4, val5, val6, val7);
+  printAnalogInputs(val, val2, val3, val4, val5, val6, val7);
 
 
   //  Serial.println(touchRead(23));
@@ -79,8 +82,8 @@ void processInputChanges() {
     if (analogIn < previousLowVals[index]) {
       previousLowVals[index] = analogIn;
     }
-    if (abs(analogIn - previousLowVals[index]) > 3000) {
-      Serial.print("Found an input change for pillow  ");
+    if (abs(analogIn - previousLowVals[index]) > TOUCH_THRESHOLD) {
+      Serial.print("Found an input change for plant touch point  ");
       Serial.print(index);
       Serial.print(" analog in is: ");
       Serial.print(analogIn);
