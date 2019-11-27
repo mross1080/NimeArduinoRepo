@@ -1,13 +1,22 @@
+#include <Adafruit_NeoPixel.h>
+
 #include "SPI.h"
+
+
+#define PIN            11
+
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS      3
 
 const int csPin = 8;
 const int latchPin = 7;
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 long randomvalue = 0; // random value
 long countervalue = 0; // counter value
 int serialvalue; // value for serial input
 int started = 0; // flag for whether we've received serial yet
-boolean debugVoltageOutput = true;
+boolean debugVoltageOutput = false;
 
 void setup()
 {
@@ -51,6 +60,20 @@ void setup()
 
 
   }
+
+  pixels.begin(); // This initializes the NeoPixel library.
+  pixels.setPixelColor(0, pixels.Color(0, 70, 0)); // Moderately bright green color.
+  pixels.setPixelColor(1, pixels.Color(0, 15, 70)); // Moderately bright green color.
+  pixels.setPixelColor(2, pixels.Color(70, 15, 0)); // Moderately bright green color.
+
+  pixels.show(); // This sends the updated pixel color to the hardware.
+  delay(1000);
+  pixels.setPixelColor(0, pixels.Color(0, 0, 0)); // Moderately bright green color.
+  pixels.setPixelColor(1, pixels.Color(0, 0,0)); // Moderately bright green color.
+  pixels.setPixelColor(2, pixels.Color(0, 0, 0)); // Moderately bright green color.
+
+  pixels.show(); // This sends the updated pixel color to the hardware.
+
 }
 int value;
 String analogVoltage = "";
@@ -123,12 +146,21 @@ void loop()
 
     if (serialvalue == 1) {
       route1Triggered = true;
+      pixels.setPixelColor(0, pixels.Color(30, random(0, 70), 0)); // Moderately bright green color.
+
+      pixels.show(); // This sends the updated pixel color to the hardware.
       //      analogWrite(9, 20);
     } else if (serialvalue == 2) {
       route2Triggered = true;
+      pixels.setPixelColor(2, pixels.Color(30, random(0, 70), 0)); // Moderately bright green color.
+
+      pixels.show(); // This sends the updated pixel color to the hardware.
       //      analogWrite(9, 200);
 
     } else if (serialvalue == 3) {
+      pixels.setPixelColor(1, pixels.Color(30, random(0, 70), 0)); // Moderately bright green color.
+
+      pixels.show(); // This sends the updated pixel color to the hardware.
       route3Triggered = true;
     }
 

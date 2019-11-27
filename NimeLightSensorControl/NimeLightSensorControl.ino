@@ -1,4 +1,5 @@
 
+
 int previousLow1 = 99999999;
 int previousLow2 = 99999999;
 int previousLow3 = 99999999;
@@ -87,20 +88,18 @@ void processInputChanges() {
       previousHighVals[index] = analogIn;
     }
     if (analogIn < TOUCH_THRESHOLD && !sensorTriggeredStates[index]) {
-      //    if (abs(analogIn - previousHighVals[index]) < TOUCH_THRESHOLD) {
       Serial.print("Found an input change for plant touch point  ");
       Serial.print(index);
       Serial.print(" analog in is: ");
       Serial.println(analogIn);
-      usbMIDI.sendNoteOn(60 + index, 100, 6);
-      //      Serial.print(" all time low is: ");
-      //      Serial.println(previousHighVals[index] );
+      usbMIDI.sendNoteOn(1, 100, index + 1);
+
       sensorTriggeredStates[index] = true;
     } else if (sensorTriggeredStates[index] && analogIn > TOUCH_THRESHOLD) {
       Serial.print("Turning off");
       Serial.println(index);
       sensorTriggeredStates[index] = false;
-      usbMIDI.sendNoteOff(60 + index, 0, 6);
+      usbMIDI.sendNoteOn(0, 0, index + 1);
 
     }
 
@@ -112,110 +111,19 @@ void processInputChanges() {
     Serial.print(" analog in is: ");
     Serial.println(analogRead10);
     sensorTriggeredStates[10] = true;
-    usbMIDI.sendNoteOn(70, 100, 6);
+    usbMIDI.sendNoteOn(1, 100, 10);
 
 
   }  else if (sensorTriggeredStates[10] && analogRead10 > 900) {
     Serial.print("Turning off 10");
     sensorTriggeredStates[10] = false;
-    usbMIDI.sendNoteOff(70, 0, 6);
+    usbMIDI.sendNoteOn(0, 0, 10);
+
 
 
   }
 }
 
-void processEvents(long currentMillis) {
-  // This is the function that is handeling the preform mode, so basically this is sending the main actions for each one of the instruments
-  boolean currentState = false;
-  int currentValue = 100;
-  for (int index = 0; index < 7; index++) {
-
-
-    currentState = sensorTriggeredStates[index];
-    boolean noteState = noteStates[index];
-    if (currentState && !noteState) {
-      noteStates[index] = true;
-      //      //Refactor this
-      switch (index) {
-        //
-        case 0:
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 1);
-          Serial.println("Triggered Touch Plant 1");
-          break;
-        case 1:
-
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 2);
-          Serial.println("Triggered Touch Plant 2");          break;
-        case 2:
-
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 3);
-          Serial.println("Triggered Touch Plant 3");
-          break;
-        case 3:
-          // statements
-
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 4);
-
-          Serial.println("Triggered Touch Plant 4");
-          break;
-        case 4:
-          // statements
-
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 5);
-
-          Serial.println("Triggered Touch Plant 5");
-          break;
-        case 5:
-          // statements
-
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 6);
-
-          Serial.println("Triggered Touch Plant 6");
-          break;
-        case 6:
-          // statements
-
-          usbMIDI.sendNoteOn(map(currentValue, 1000, 10000, 0, 100), 1, 7);
-
-          Serial.println("Triggered Touch Plant 7");
-          break;
-        default:
-
-
-          //          usbMIDI.sendNoteOn(50, 100, index + 1);
-
-          break;
-      }
-    }
-
-
-    //    if (noteState && !currentState) {
-    //      // NOTE OFF
-    //      //            Serial.print("Current interval : " );
-    //      //            Serial.println(currentMillis - previousMillis);
-    //      if (currentMillis - previousMillis > 20) {
-    //        Serial.print("Turning off ");
-    //        Serial.println(index);
-    //        //      usbMIDI.sendNoteOff(50, 0, index + 1);
-    //        // Turn off note from LFO based grain voice
-    //        usbMIDI.sendNoteOff(0, 1, index + 1);
-    //        noteStates[index] = false;
-    //
-    //        //        usbMIDI.sendNoteOff(55, 0, 9);
-    //        //Turn off volume if note isn't being held anymore
-    //        //        usbMIDI.sendControlChange(4, 0, index + 1);
-    //        previousMillis = currentMillis;
-    //      }
-    //
-    //
-    //
-    //    }
-
-  }
-  //  usbMIDI.sendNoteOff(55, 0, 9);
-  //  usbMIDI.sendControlChange(4, 0, 3);
-  //  usbMIDI.sendControlChange(4, 0, 2);
-}
 
 
 
