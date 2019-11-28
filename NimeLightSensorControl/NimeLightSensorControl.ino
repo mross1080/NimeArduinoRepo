@@ -7,8 +7,8 @@ int previousLow4 = 99999999;
 int HOLD_PIN_INDEX = 5;
 const int TOUCH_THRESHOLD = 400;
 const int SENSOR_READ_INTERVAL = 500;
-const int NUM_SENSORS = 11;
-int sensorPins[NUM_SENSORS] = { A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A14};
+const int NUM_SENSORS = 10;
+int sensorPins[NUM_SENSORS] = { A0, A1, A2, A3, A4, A5, A6, A7, A8, A9};
 boolean sensorTriggeredStates[NUM_SENSORS];
 int previousHighVals[NUM_SENSORS];
 boolean noteStates[NUM_SENSORS];
@@ -24,15 +24,16 @@ void setup() {
 
 
   Serial.begin(9600);
+  Serial.println("hi");
   currentMillis = millis();
   // Initialize Default State for all arrays
-  for (int index = 0; index < NUM_SENSORS; index++) {
+  for (int index = 0; 10 < NUM_SENSORS; index++) {
     sensorTriggeredStates[index] = false;
     previousHighVals[index] = 0;
     noteStates[index] = false;
 
   }
-
+  Serial.println("Ready With Plant Sensors");
 
 }
 
@@ -40,39 +41,48 @@ boolean recordingInProgress = false;
 
 void printAnalogInputs() {
 
-
-  for (int index = 0; index < NUM_SENSORS; index++) {
+  int analogOut;
+  for (int index = 0; index < 11; index++) {
     Serial.print("analog value from sensor  ");
     Serial.print(index);
-
+    analogOut = analogRead(A20);
+    
     Serial.print("   is  : ");
+//    if (analogOut < TOUCH_THRESHOLD) {
+//
+//      Serial.println("Touched");
+//
+//    } else {
+//      Serial.println("not touched");
+//    }
+    Serial.println(analogOut);
 
-    Serial.println(analogRead(sensorPins[index]));
-
-    delay(30);
+    delay(200);
   }
   Serial.println("\n\n\n\n\n\n");
 
 
 }
 
-
+int counter = 0;
 void loop() {
   // put your main code here, to run repeatedly:
 
   unsigned long currentMillis = millis();
-  //  printAnalogInputs();
 
 
-  //  Serial.println(analogRead(23));
 
   //Check for input changes every xMs Interval
-  if (currentMillis - previousMillis > SENSOR_READ_INTERVAL) {
+  if (currentMillis - previousMillis > SENSOR_READ_INTERVAL ) {
 
-    processInputChanges();
+//    printAnalogInputs();
+    counter += 1;
+    Serial.print("made it to ");
+    Serial.println(counter);
+            processInputChanges();
     previousMillis = currentMillis;
   }
-  //  processEvents(currentMillis);
+
 
   delay(350);
 }
@@ -105,7 +115,9 @@ void processInputChanges() {
 
   }
   // Edge case for sensor 10
-  analogRead10 = analogRead(A14);
+  analogRead10 = analogRead(A20);
+//  Serial.print("A10 : ");
+//  Serial.println(analogRead10);
   if (analogRead10 < 800 && !sensorTriggeredStates[10]) {
     Serial.print("Found an input change for plant touch point  10 !!!!!");
     Serial.print(" analog in is: ");
