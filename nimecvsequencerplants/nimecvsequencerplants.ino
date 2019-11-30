@@ -146,19 +146,19 @@ void loop()
 
     if (serialvalue == 1) {
       route1Triggered = true;
-      pixels.setPixelColor(0, pixels.Color(30, random(0, 70), 0)); // Moderately bright green color.
+      pixels.setPixelColor(0, pixels.Color(30, random(0, 70), random(0, 70))); // Moderately bright green color.
 
       pixels.show(); // This sends the updated pixel color to the hardware.
       //      analogWrite(9, 20);
     } else if (serialvalue == 2) {
       route2Triggered = true;
-      pixels.setPixelColor(2, pixels.Color(30, random(0, 70), 0)); // Moderately bright green color.
+      pixels.setPixelColor(2, pixels.Color(30, random(0, 70), random(0, 70))); // Moderately bright green color.
 
       pixels.show(); // This sends the updated pixel color to the hardware.
       //      analogWrite(9, 200);
 
     } else if (serialvalue == 3) {
-      pixels.setPixelColor(1, pixels.Color(30, random(0, 70), 0)); // Moderately bright green color.
+      pixels.setPixelColor(1, pixels.Color(30, random(0, 70), random(0, 70))); // Moderately bright green color.
 
       pixels.show(); // This sends the updated pixel color to the hardware.
       route3Triggered = true;
