@@ -4775,6 +4775,7 @@
 						"tags" : "",
 						"style" : "",
 						"subpatcher_template" : "",
+						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"comment" : "",
@@ -5098,7 +5099,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 220.33331298828125, 360.666656494140625, 24.0, 24.0 ]
+									"patching_rect" : [ 224.83331298828125, 397.666656494140625, 24.0, 24.0 ]
 								}
 
 							}
