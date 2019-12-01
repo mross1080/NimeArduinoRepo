@@ -5,7 +5,7 @@ int previousLow2 = 99999999;
 int previousLow3 = 99999999;
 int previousLow4 = 99999999;
 int HOLD_PIN_INDEX = 5;
-const int TOUCH_THRESHOLD = 400;
+const int TOUCH_THRESHOLD = 350;
 const int SENSOR_READ_INTERVAL = 500;
 const int NUM_SENSORS = 10;
 int sensorPins[NUM_SENSORS] = { A0, A1, A2, A3, A4, A5, A6, A7, A8, A9};
@@ -123,13 +123,13 @@ void processInputChanges() {
     Serial.print(" analog in is: ");
     Serial.println(analogRead10);
     sensorTriggeredStates[10] = true;
-    usbMIDI.sendNoteOn(1, 100, 10);
+    usbMIDI.sendNoteOn(1, 100, 11);
 
 
   }  else if (sensorTriggeredStates[10] && analogRead10 > 900) {
     Serial.print("Turning off 10");
     sensorTriggeredStates[10] = false;
-    usbMIDI.sendNoteOn(0, 0, 10);
+    usbMIDI.sendNoteOn(0, 0, 11);
 
 
 
