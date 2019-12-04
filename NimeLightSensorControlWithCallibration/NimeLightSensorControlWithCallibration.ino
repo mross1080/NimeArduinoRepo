@@ -5,11 +5,14 @@ int previousLow2 = 99999999;
 int previousLow3 = 99999999;
 int previousLow4 = 99999999;
 int HOLD_PIN_INDEX = 5;
-const int TRIGGER_LEVEL = 200;
+const int TRIGGER_LEVEL = 120;
 const int SENSOR_READ_INTERVAL = 500;
-const int NUM_SENSORS = 8;
+const int NUM_SENSORS = 10;
 //int sensorPins[NUM_SENSORS] = { A0, A1, A2, A3, A4, A5, A6, A7, A8, A9};
-int sensorPins[NUM_SENSORS] = { A0, A2, A3, A4, A5, A7, A8, A9};
+//A9 is jumpy sso replacing it with A6 as a test
+//int sensorPins[NUM_SENSORS] = { A0, A2, A3, A4, A5, A7, A8, A9, A20, A1};
+int sensorPins[NUM_SENSORS] = { A0, A2, A3, A4, A5, A7, A8, A6, A20, A1};
+
 int sensorOffRestingStates[NUM_SENSORS];
 int sensorOnTriggeredStates[NUM_SENSORS];
 
@@ -40,8 +43,8 @@ void setup() {
 
   }
 
-//  callibrateSensors("resting");
-//  callibrateSensors("triggered");
+  callibrateSensors("resting");
+  //  callibrateSensors("triggered");
   Serial.println("Ready With Plant Sensors");
 
 }
@@ -58,7 +61,7 @@ void callibrateSensors(String callibrationType) {
     Serial.println("triggered state callibration");
   }
 
-  for (int index = 0; index < 4; index++) {
+  for (int index = 0; index < NUM_SENSORS; index++) {
     sensorTriggeredStates[index] == false;
     previousHighVals[index] = 0;
     noteStates[index] = false;
@@ -80,6 +83,8 @@ void callibrateSensors(String callibrationType) {
       }
       int avgs[] = {0, 0, 0, 0, 0};
       int y = 0;
+      int highestForReading = 0;
+      int lowestForReading = 0;
       //      /**
       //        Take Averages 5 Times of Highest Distance
       //        That Should be the floor
@@ -161,27 +166,25 @@ boolean recordingInProgress = false;
 void printAnalogInputs() {
   //
   int analogOut;
-  for (int index = 4; index < 7; index++) {
+  for (int index = 7; index < 8; index++) {
     Serial.print("analog value from sensor  ");
     Serial.print(index);
     analogOut = analogRead(sensorPins[index]);
 
     Serial.print("   is  : ");
-    //    if (analogOut < TOUCH_THRESHOLD) {
-    //
-    //      Serial.println("Touched");
-    //
-    //    } else {
-    //      Serial.println("not touched");
-    //    }
+
     Serial.println(analogOut);
 
+
+    int restingState = sensorOffRestingStates[index];
+    Serial.print("resting state set to : ");
+    Serial.println(restingState);
     delay(200);
   }
-  Serial.print("Pin 11 ");
-  analogRead10 = analogRead(A20);
-
-  Serial.println(analogRead10);
+  //  Serial.print("Pin 11 ");
+  //  analogRead10 = analogRead(A20);
+  //
+  //  Serial.println(analogRead10);
   Serial.println("\n\n\n\n\n\n");
 
 
@@ -222,54 +225,59 @@ void processInputChanges() {
     }
     int defaultState = sensorOffRestingStates[index];
     int triggeredStateLevel = sensorOnTriggeredStates[index];
-    if (analogIn < TRIGGER_LEVEL && !sensorTriggeredStates[index]) {
-      //    if (abs(triggeredStateLevel - analogIn) < 10 && !sensorTriggeredStates[index]) {
-//      if (abs(triggeredStateLevel - analogIn) < 25) {
+    //    if (analogIn < TRIGGER_LEVEL && !sensorTriggeredStates[index]) {
+    //    if (abs(triggeredStateLevel - analogIn) < 10 && !sensorTriggeredStates[index]) {
+    //      if (abs(triggeredStateLevel - analogIn) < 25) {
+    //    Serial.print("resting level is : ");
+    //    Serial.println(defaultState);
+    //    Serial.print(" analog in is: ");
+    //    Serial.println(analogIn);
+    if ((defaultState - analogIn) > TRIGGER_LEVEL && !sensorTriggeredStates[index]) {
+      Serial.print("Found an input change for plant touch point  ");
+      Serial.println(index);
 
-        Serial.print("Found an input change for plant touch point  ");
-        Serial.println(index);
+      //      Serial.print("triggered level is : ");
+      //      Serial.println(triggeredStateLevel);
+      Serial.print("resting level is : ");
+      Serial.println(defaultState);
+      Serial.print(" analog in is: ");
+      Serial.println(analogIn);
 
-        //      Serial.print("triggered level is : ");
-        //      Serial.println(triggeredStateLevel);
-        //      Serial.print("resting level is : ");
-        //      Serial.println(defaultState);
-        Serial.print(" analog in is: ");
-        Serial.println(analogIn);
+      usbMIDI.sendNoteOn(1, 100, index + 1);
 
-        usbMIDI.sendNoteOn(1, 100, index + 1);
-
-        sensorTriggeredStates[index] = true;
-      } else if (sensorTriggeredStates[index] && (analogIn > TRIGGER_LEVEL) ) {
-        //    } else if (sensorTriggeredStates[index] && abs(analogIn - triggeredStateLevel) > 25) {
-        Serial.print("Turning off");
-        Serial.println(index);
-        sensorTriggeredStates[index] = false;
-        usbMIDI.sendNoteOn(0, 0, index + 1);
-
-      }
+      sensorTriggeredStates[index] = true;
+    }  else if (sensorTriggeredStates[index] && (defaultState - analogIn) < TRIGGER_LEVEL) {
+      //      else if (sensorTriggeredStates[index] && (analogIn > TRIGGER_LEVEL) ) {
+      //        //    } else if (sensorTriggeredStates[index] && abs(analogIn - triggeredStateLevel) > 25) {
+      Serial.print("Turning off");
+      Serial.println(index);
+      sensorTriggeredStates[index] = false;
+      usbMIDI.sendNoteOn(0, 0, index + 1);
 
     }
-    // Edge case for sensor 10
-    //  analogRead10 = analogRead(A20);
-    //  //  Serial.print("A10 : ");
-    //  //  Serial.println(analogRead10);
-    //  if (analogRead10 < 800 && !sensorTriggeredStates[10]) {
-    //    Serial.print("Found an input change for plant touch point  10 !!!!!");
-    //    Serial.print(" analog in is: ");
-    //    Serial.println(analogRead10);
-    //    sensorTriggeredStates[10] = true;
-    //    usbMIDI.sendNoteOn(1, 100, 11);
-    //
-    //
-    //  }  else if (sensorTriggeredStates[10] && analogRead10 > 900) {
-    //    Serial.print("Turning off 10");
-    //    sensorTriggeredStates[10] = false;
-    //    usbMIDI.sendNoteOn(0, 0, 11);
-    //
-    //
-    //
-    //  }
+
   }
+  // Edge case for sensor 10
+  //  analogRead10 = analogRead(A20);
+  //  //  Serial.print("A10 : ");
+  //  //  Serial.println(analogRead10);
+  //  if (analogRead10 < 800 && !sensorTriggeredStates[10]) {
+  //    Serial.print("Found an input change for plant touch point  10 !!!!!");
+  //    Serial.print(" analog in is: ");
+  //    Serial.println(analogRead10);
+  //    sensorTriggeredStates[10] = true;
+  //    usbMIDI.sendNoteOn(1, 100, 11);
+  //
+  //
+  //  }  else if (sensorTriggeredStates[10] && analogRead10 > 900) {
+  //    Serial.print("Turning off 10");
+  //    sensorTriggeredStates[10] = false;
+  //    usbMIDI.sendNoteOn(0, 0, 11);
+  //
+  //
+  //
+  //  }
+}
 
 
 
