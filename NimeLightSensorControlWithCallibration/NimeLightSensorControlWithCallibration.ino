@@ -198,15 +198,15 @@ void loop() {
 
 
 
-  //  //Check for input changes every xMs Interval
+  //  //Check for input changes every xMs Interval  
   if (currentMillis - previousMillis > SENSOR_READ_INTERVAL ) {
 
-    printAnalogInputs();
+//    printAnalogInputs();
     //    counter += 1;
     //    //    Serial.print("made it to ");
     //    //    Serial.println(counter);
     processInputChanges();
-    previousMillis = currentMillis;
+    previousMillis = currentMillis;     
   }
 
 
